@@ -1,28 +1,26 @@
-# UnifiHosts
+# UniFi Hosts
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/unifi_hosts`. To experiment with that code, run `bin/console` for an interactive prompt.
+`unfi-hosts` is a script that can transform an `/etc/hosts` file for a UniFi Security Gateway (USG). Some of the transforms are:
 
-TODO: Delete this and the text above, and describe your gem
+- Reformat so that the columns are evenly spaced out.
+- Sort entries by IP address.
+- Remove duplicate IP addresses.
+
+Removing duplicates can help fix issues with incorrectly reported hostnames.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'unifi_hosts'
-```
-
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
+Install it via Ruby Gems:
 
     $ gem install unifi_hosts
 
 ## Usage
 
 TODO: Write usage instructions here
+
+## Duplicate IP Addresses
+
+Removing duplicates is important because depulicates can cause issues doing reverse lookups. The USG will use the first entry found in `/etc/hosts`. However if a host changes its name, then then new name is appended to the end, leaving the original entry. This causes the old name to be used for reverse lookups.
 
 ## Development
 
@@ -32,4 +30,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/unifi_hosts.
+Bug reports and pull requests are welcome on GitHub at https://github.com/ddribin/unifi_hosts.
