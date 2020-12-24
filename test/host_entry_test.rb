@@ -73,6 +73,11 @@ EOF
       assert_nil(HostEntry.parse('# Comment'))
     end
 
+    test "Multiple hosts" do
+      e = HostEntry.parse('192.168.1.1 host1 host2 #comment')
+      assert_equal(HostEntry.new('192.168.1.1', 'host1 host2', 'comment'), e)
+    end
+
     test "Tabs are stripped" do
       e = HostEntry.parse("192.168.1.1\t host\t \#comment")
       assert_equal(HostEntry.new("192.168.1.1", "host", "comment"), e)
