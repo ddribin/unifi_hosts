@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require 'unifi_dedupe_hosts/cli'
+
+cli = UnifiDedupeHosts::CLI.new(File.basename($0))
+result = cli.run(ARGV)
+exit result
+
