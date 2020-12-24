@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "Remove duplicates from /etc/host of a UniFi USG"
   # spec.description   = "TODO: Write a longer description or delete this line."
   # spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
