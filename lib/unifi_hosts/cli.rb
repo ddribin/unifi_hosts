@@ -18,51 +18,46 @@ module UnifiHosts
 
     desc "format FILE", "Reformats FILE"
     def format(input_file)
-      hosts_file = read_hosts_file(input_file)
-      return 1 if hosts_file.nil?
-
-      with_output do |o|
-        hosts_file.headers.each { |h| o.puts h }
-        entries = hosts_file.entries
-        o.puts HostEntry.to_s(entries)
+      transform_entries(input_file) do |hosts_file|
+        hosts_file.entries
       end
     end
 
     desc "sort FILE", "Sorts entries in FILE by IP address"
     def sort(input_file)
-      hosts_file = read_hosts_file(input_file)
-      return 1 if hosts_file.nil?
-      
-      with_output do |o|
-        hosts_file.headers.each { |h| o.puts h }
-        entries = hosts_file.sort_entries
-        o.puts HostEntry.to_s(entries)
+      transform_entries(input_file) do |hosts_file|
+        hosts_file.sort_entries
       end
     end
 
     desc "dedupe FILE", "Removes dpulicate entries in FILE"
     def dedupe(input_file)
-      hosts_file = read_hosts_file(input_file)
-      return 1 if hosts_file.nil?
-      
-      with_output do |o|
-        hosts_file.headers.each { |h| o.puts h }
-        entries = hosts_file.dedupe_entries(&method(:print_dedupe_event))
-        o.puts HostEntry.to_s(entries)
+      transform_entries(input_file) do |hosts_file|
+        hosts_file.dedupe_entries(&method(:print_dedupe_event))
       end
     end
 
     no_commands do
       def read_hosts_file(file)
-        hosts_file = nil
+        hosts_file = with_input(file) do |input|
+          HostsFile.read(input)
+        end
+        return hosts_file
+      end
+
+      def with_input(file)
+        result = nil
         begin
-          hosts_file = File.open(file) do |input|
-            HostsFile.read(input)
+          if file == "-"
+            result = yield(STDIN)
+          else
+            result = File.open(file) { |input| yield input }
           end
         rescue Errno::ENOENT, Errno::EACCES => e
           $stderr.puts "#{BASE_COMMAND} #{current_command}: #{e.message}"
+          result = nil
         end
-        return hosts_file
+        return result
       end
 
       def print_dedupe_event(event, entry)
@@ -77,25 +72,60 @@ module UnifiHosts
         $stderr.puts "#{verb}#{entry}"
       end
 
+      def validate_output
+        if options[:output] && options[:in_place]
+          error "Cannot specify both --output and --in-place"
+          return false
+        end
+        return true
+      end
+
+      def output(input_file:, headers:, entries:)
+        with_output(input_file: input_file) do |o|
+          headers.each { |h| o.puts h }
+          o.puts HostEntry.to_s(entries)
+        end
+      end
+
+      def transform_entries(input_file)
+        return 1 if !validate_output
+        hosts_file = read_hosts_file(input_file)
+        return 1 if hosts_file.nil?
+        
+        with_output(input_file: input_file) do |o|
+          hosts_file.headers.each { |h| o.puts h }
+          entries = yield hosts_file
+          o.puts HostEntry.to_s(entries)
+        end
+      end
+
       # Opens output file and calls the block with the IO handle
-      def with_output
+      def with_output(input_file:)
+        output_file = options[:output] 
+        output_file = input_file if options[:in_place]
+        output_file ||=  "-"
+
         result = 0
-        output_file =  options[:output] || "-"
-        if output_file == '-'
-          result = yield(STDOUT)
-        else
-          begin
+        begin
+          if output_file == '-'
+            result = yield(STDOUT)
+          else
             if options[:dry_run]
               $stderr.puts "Dry run: Not writing to #{output_file}"
               output_file = '/dev/null' if options[:dry_run]
             end
-            result = File.open(output_file, "w") { |io|  yield io }
-          rescue Errno::ENOENT, Errno::EACCES => e
-            $stderr.puts "#{BASE_COMMAND} #{current_command}: #{e.message}"
-            result = 1
+
+            File.open(output_file, "w") { |output|  yield output }
           end
+        rescue Errno::ENOENT, Errno::EACCES => e
+          error "#{e.message}"
+          result = 1
         end
         return result
+      end
+
+      def error(message)
+        $stderr.puts "#{BASE_COMMAND} #{current_command}: #{message}"
       end
 
       # Override to get current command
