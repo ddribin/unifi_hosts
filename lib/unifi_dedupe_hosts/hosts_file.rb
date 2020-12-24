@@ -16,7 +16,7 @@ module UnifiDedupeHosts
     def self.parse(string)
       return self.read(StringIO.new(string))
     end
-    
+
     def self.read(input)
       headers = []
       entries = []
@@ -31,6 +31,15 @@ module UnifiDedupeHosts
       end
 
       HostsFile.new(headers, entries)
+    end
+
+    def sort_entries
+      entries_by_ip = @entries.group_by { |e| e.ip_int }
+      sorted_ips = entries_by_ip.keys.sort
+      sorted_entries = sorted_ips.map do |ip|
+        entries_by_ip[ip]
+      end
+      sorted_entries.flatten
     end
 
     def dedupe_entries

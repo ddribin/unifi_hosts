@@ -22,7 +22,8 @@ module UnifiDedupeHosts
           HostsFile.read(input)
         end
         hosts_file.headers.each { |h| puts h }
-        deduped_entries = hosts_file.dedupe_entries(&method(:print_dedupe_event))
+        # deduped_entries = hosts_file.dedupe_entries(&method(:print_dedupe_event))
+        deduped_entries = hosts_file.sort_entries
         puts HostEntry.to_s(deduped_entries)
       rescue Errno::ENOENT, Errno::EACCES => e
         $stderr.puts "#{@command}: #{e.message}"
