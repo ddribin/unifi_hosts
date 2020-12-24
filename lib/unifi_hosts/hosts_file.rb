@@ -1,6 +1,6 @@
 require_relative 'host_entry'
 
-module UnifiDedupeHosts
+module UnifiHosts
   class HostsFile
     SKIP = 1
     KEEP = 2

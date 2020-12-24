@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/unifi_dedupe_hosts/version"
+require_relative "lib/unifi_hosts/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "unifi_dedupe_hosts"
-  spec.version       = UnifiDedupeHosts::VERSION
+  spec.name          = "unifi_hosts"
+  spec.version       = UnifiHosts::VERSION
   spec.authors       = ["Dave Dribin"]
   spec.email         = ["dave@dribin.org"]
 

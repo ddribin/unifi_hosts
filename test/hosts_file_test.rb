@@ -1,8 +1,8 @@
 require 'test_helper'
-require 'unifi_dedupe_hosts/hosts_file'
-require 'unifi_dedupe_hosts/host_entry'
+require 'unifi_hosts/hosts_file'
+require 'unifi_hosts/host_entry'
 
-module UnifiDedupeHosts
+module UnifiHosts
   class HostsFileTest < Test::Unit::TestCase
     test "Read hosts file" do
       input = <<-EOF

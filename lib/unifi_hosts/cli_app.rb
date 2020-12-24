@@ -6,7 +6,7 @@ require 'pp'
 require_relative 'hosts_file'
 require_relative 'host_entry'
 
-module UnifiDedupeHosts
+module UnifiHosts
   class CLI
     def initialize(command)
       @command = command

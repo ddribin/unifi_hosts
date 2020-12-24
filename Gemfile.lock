@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    unifi_dedupe_hosts (0.1.0)
+    unifi_hosts (0.1.0)
       thor
 
 GEM
@@ -19,7 +19,7 @@ PLATFORMS
 DEPENDENCIES
   rake (~> 13.0)
   test-unit (~> 3.0)
-  unifi_dedupe_hosts!
+  unifi_hosts!
 
 BUNDLED WITH
    2.2.3

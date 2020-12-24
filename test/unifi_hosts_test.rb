@@ -2,10 +2,10 @@
 
 require "test_helper"
 
-class UnifiDedupeHostsTest < Test::Unit::TestCase
+class UnifiHostsTest < Test::Unit::TestCase
   test "VERSION" do
     assert do
-      ::UnifiDedupeHosts.const_defined?(:VERSION)
+      ::UnifiHosts.const_defined?(:VERSION)
     end
   end
 

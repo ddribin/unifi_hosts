@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'unifi_dedupe_hosts/cli'
+require 'unifi_hosts/cli'
 
-UnifiDedupeHosts::CLI.start
+UnifiHosts::CLI.start

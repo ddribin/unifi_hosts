@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in unifi_dedupe_hosts.gemspec
+# Specify your gem's dependencies in unifi_hosts.gemspec
 gemspec
 
 gem "rake", "~> 13.0"

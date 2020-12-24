@@ -1,4 +1,4 @@
-module UnifiDedupeHosts
+module UnifiHosts
   class HostEntry
     attr_reader :ip_address
     attr_reader :hostnames

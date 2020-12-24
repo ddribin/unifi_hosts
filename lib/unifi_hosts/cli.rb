@@ -1,6 +1,6 @@
 require 'thor'
 
-module UnifiDedupeHosts
+module UnifiHosts
   class CLI < Thor
     desc "format FILE", "Reformats FILE"
     def format(name)

@@ -1,7 +1,7 @@
 require 'test_helper'
-require 'unifi_dedupe_hosts/host_entry'
+require 'unifi_hosts/host_entry'
 
-module UnifiDedupeHosts
+module UnifiHosts
   class HostEntryTest < Test::Unit::TestCase
     test "IP integer" do
       e = HostEntry.new("192.168.1.2", "host2", '#comment')

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "unifi_dedupe_hosts/version"
+require_relative "unifi_hosts/version"
 
-module UnifiDedupeHosts
+module UnifiHosts
   class Error < StandardError; end
   # Your code goes here...
 end
