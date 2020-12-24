@@ -32,10 +32,15 @@ module UnifiDedupeHosts
     def dedupe_entries(instrumentation)
       entries_by_ip = @entries.group_by { |e| e.ip_int }
       uniqued_ips = entries_by_ip.transform_values do |entries|
-      entry = entries.pop
-      entries.each { |e| instrumentation.skipping(e) }
-      instrumentation.keeping(e)
-      entry
+        entry = entries.pop
+        if (!instrumentation.nil?)
+          entries.each { |e| instrumentation.skipping(e) }
+          instrumentation.keeping(entry)
+        end
+        entry
+      end
+      sorted_ips = entries_by_ip.keys.sort
+      sorted_ips.map { |e| uniqued_ips[e] }
     end
   end
 end

@@ -2,7 +2,7 @@ module UnifiDedupeHosts
   class HostEntry
     attr_reader :ip_address
     attr_reader :hostnames
-    attr_reader :mac_address
+    attr_reader :comment
 
     def initialize(ip_address, hostnames, comment)
       @ip_address = ip_address
@@ -18,7 +18,13 @@ module UnifiDedupeHosts
     end
 
     def to_s
-      return "#{@ip_address}\t#{@hostnames}\t#{comment}\n"
+      return "#{@ip_address}\t#{@hostnames}\t\##{comment}\n"
+    end
+
+    def ==(other)
+      @ip_address == other.ip_address &&
+      @hostnames == other.hostnames &&
+      @comment == other.comment
     end
   end
 end
