@@ -4,6 +4,7 @@ require 'ostruct'
 require 'pp'
 
 require_relative 'hosts_file'
+require_relative 'host_entry'
 
 module UnifiDedupeHosts
   class CLI
@@ -20,12 +21,26 @@ module UnifiDedupeHosts
         hosts_file = File.open(@options.input_file) do |input|
           HostsFile.read(input)
         end
-        pp hosts_file
+        hosts_file.headers.each { |h| puts h }
+        deduped_entries = hosts_file.dedupe_entries(&method(:print_dedupe_event))
+        puts HostEntry.to_s(deduped_entries)
       rescue Errno::ENOENT, Errno::EACCES => e
         $stderr.puts "#{@command}: #{e.message}"
         result = 1
       end
       return result
+    end
+
+    def print_dedupe_event(event, entry)
+      return if !@options.verbose
+
+      verb = case event
+      when HostsFile::SKIP
+        "Skip: "
+      when HostsFile::KEEP
+        "Keep: "
+      end
+      $stderr.puts "#{verb}#{entry}"
     end
 
     def parse_options(args)
@@ -62,6 +77,6 @@ module UnifiDedupeHosts
 
       @options = options
       return 0
-    end    
+    end
   end
 end

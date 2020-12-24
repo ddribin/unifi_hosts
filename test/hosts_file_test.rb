@@ -13,7 +13,7 @@ module UnifiDedupeHosts
 192.168.1.2 host2 #comment2
 EOF
 
-      f = HostsFile.read(StringIO.new(input))
+      f = HostsFile.parse(input)
       assert_not_nil(f)
       headers = [
         '127.0.0.1 localhost',
@@ -31,7 +31,7 @@ EOF
 192.168.1.1 host1 host2 #comment"
 EOF
 
-      f = HostsFile.read(StringIO.new(input))
+      f = HostsFile.parse(input)
       assert_not_nil(f)
       assert_equal("host1 host2", f.entries[0].hostnames)
     end
@@ -44,12 +44,12 @@ EOF
 192.168.1.2 host2 #comment 2
 EOF
 
-      f = HostsFile.read(StringIO.new(input))
+      f = HostsFile.parse(input)
       expected = [
         HostEntry.new('192.168.1.1', 'host1b', 'comment 1b'),
         HostEntry.new('192.168.1.2', 'host2', 'comment 2')
       ]
-      actual = f.dedupe_entries(nil)
+      actual = f.dedupe_entries
       assert_equal(expected, actual)
     end
 
@@ -61,12 +61,12 @@ EOF
 192.168.1.1 host1b #comment 1b
 EOF
 
-      f = HostsFile.read(StringIO.new(input))
+      f = HostsFile.parse(input)
       expected = [
         HostEntry.new('192.168.1.1', 'host1b', 'comment 1b'),
         HostEntry.new('192.168.1.2', 'host2', 'comment 2')
       ]
-      actual = f.dedupe_entries(nil)
+      actual = f.dedupe_entries
       assert_equal(expected, actual)
     end
 
@@ -78,12 +78,12 @@ EOF
 192.168.1.10 host10b #comment 10b
 EOF
 
-      f = HostsFile.read(StringIO.new(input))
+      f = HostsFile.parse(input)
       expected = [
         HostEntry.new('192.168.1.2', 'host2', 'comment 2'),
         HostEntry.new('192.168.1.10', 'host10b', 'comment 10b'),
       ]
-      actual = f.dedupe_entries(nil)
+      actual = f.dedupe_entries
       assert_equal(expected, actual)
     end
 
@@ -95,38 +95,25 @@ EOF
 192.168.1.10 host10b #comment 10b
 EOF
 
-      f = HostsFile.read(StringIO.new(input))
+      f = HostsFile.parse(input)
 
-      i = InstrumentationSpy.new
-      f.dedupe_entries(i)
+      actual_skipped = []
+      actual_kept = []
+      f.dedupe_entries do |event, entry|
+        actual_skipped.append(entry) if event == HostsFile::SKIP
+        actual_kept.append(entry) if event == HostsFile::KEEP
+      end
 
       skipped = [
         HostEntry.new('192.168.1.10', 'host10a', 'comment 10a'),
       ]
-      assert_equal(skipped, i.skipped)
+      assert_equal(skipped, actual_skipped)
 
       kept = [
         HostEntry.new('192.168.1.10', 'host10b', 'comment 10b'),
         HostEntry.new('192.168.1.2', 'host2', 'comment 2'),
       ]
-      assert_equal(kept, i.kept)
-    end
-
-    class InstrumentationSpy
-      attr_reader :skipped
-      attr_reader :kept
-      def initialize
-        @skipped = []
-        @kept= []
-      end
-
-      def skipping(e)
-        @skipped.append(e)
-      end
-
-      def keeping(e)
-        @kept.append(e)
-      end
+      assert_equal(kept, actual_kept)
     end
 
   end

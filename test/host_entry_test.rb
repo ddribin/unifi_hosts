@@ -41,5 +41,41 @@ module UnifiDedupeHosts
       e2 = HostEntry.new("192.168.1.1", "host", '#comment2')
       assert_not_equal(e1, e2)
     end
+
+    test "Array to_s" do
+      entries = [
+      HostEntry.new("192.168.1.1", "host1", 'comment 1'),
+      HostEntry.new("192.168.1.2", "host2a host2b", 'comment 2'),
+      HostEntry.new("192.168.1.100", "host100", 'comment 100'),
+      ]
+      expected = <<-EOF
+192.168.1.1   host1         #comment 1
+192.168.1.2   host2a host2b #comment 2
+192.168.1.100 host100       #comment 100
+EOF
+      assert_equal(expected.chomp, HostEntry.to_s(entries))
+    end
+
+    test "Parse valid entry" do
+      e = HostEntry.parse('192.168.1.1 host #comment')
+      assert_equal(HostEntry.new("192.168.1.1", "host", "comment"), e)
+    end
+
+    test "No comment does not parse" do
+      assert_nil(HostEntry.parse('127.0.0.1 localhost'))
+    end
+
+    test "Blank line does not parse" do
+      assert_nil(HostEntry.parse(''))
+    end
+
+    test "Comment does not parse" do
+      assert_nil(HostEntry.parse('# Comment'))
+    end
+
+    test "Tabs are stripped" do
+      e = HostEntry.parse("192.168.1.1\t host\t \#comment")
+      assert_equal(HostEntry.new("192.168.1.1", "host", "comment"), e)
+    end
   end
 end
