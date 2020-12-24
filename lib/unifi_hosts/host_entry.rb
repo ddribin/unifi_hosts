@@ -1,5 +1,6 @@
 module UnifiHosts
   class HostEntry
+
     attr_reader :ip_address
     attr_reader :hostnames
     attr_reader :comment
@@ -49,8 +50,32 @@ module UnifiHosts
       end
       return strings.join("\n")
     end
+
     def self.max (a,b)
       a>b ? a : b
+    end
+
+    def self.sort_by_ip(entries)
+      entries_by_ip = entries.group_by { |e| e.ip_int }
+      sorted_ips = entries_by_ip.keys.sort
+      sorted_entries = sorted_ips.map do |ip|
+        entries_by_ip[ip]
+      end
+      sorted_entries.flatten
+    end
+
+    def self.dedupe(entries)
+      entries_by_ip = entries.group_by { |e| e.ip_int }
+      uniqued_ips = entries_by_ip.transform_values do |entries|
+        entry = entries.pop
+        if block_given?
+          entries.each { |e| yield(:skip, e) }
+          yield(:keep, entry)
+        end
+        entry
+      end
+      sorted_ips = entries_by_ip.keys.sort
+      sorted_ips.map { |e| uniqued_ips[e] }
     end
   end
 

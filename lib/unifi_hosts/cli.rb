@@ -64,9 +64,9 @@ module UnifiHosts
         return if !@options.verbose
 
         verb = case event
-        when HostsFile::SKIP
+        when :skip
           "SKIP: "
-        when HostsFile::KEEP
+        when :keep
           "KEEP: "
         end
         $stderr.puts "#{verb}#{entry}"

@@ -2,9 +2,6 @@ require_relative 'host_entry'
 
 module UnifiHosts
   class HostsFile
-    SKIP = 1
-    KEEP = 2
-
     attr_reader :headers
     attr_reader :entries
 
@@ -34,26 +31,11 @@ module UnifiHosts
     end
 
     def sort_entries
-      entries_by_ip = @entries.group_by { |e| e.ip_int }
-      sorted_ips = entries_by_ip.keys.sort
-      sorted_entries = sorted_ips.map do |ip|
-        entries_by_ip[ip]
-      end
-      sorted_entries.flatten
+      HostEntry.sort_by_ip(@entries)
     end
 
-    def dedupe_entries
-      entries_by_ip = @entries.group_by { |e| e.ip_int }
-      uniqued_ips = entries_by_ip.transform_values do |entries|
-        entry = entries.pop
-        if block_given?
-          entries.each { |e| yield(SKIP, e) }
-          yield(KEEP, entry)
-        end
-        entry
-      end
-      sorted_ips = entries_by_ip.keys.sort
-      sorted_ips.map { |e| uniqued_ips[e] }
+    def dedupe_entries(&block)
+      HostEntry.dedupe(@entries, &block)
     end
   end
 end

@@ -113,8 +113,8 @@ EOF
       actual_skipped = []
       actual_kept = []
       f.dedupe_entries do |event, entry|
-        actual_skipped.append(entry) if event == HostsFile::SKIP
-        actual_kept.append(entry) if event == HostsFile::KEEP
+        actual_skipped.append(entry) if event == :skip
+        actual_kept.append(entry) if event == :keep
       end
 
       skipped = [
