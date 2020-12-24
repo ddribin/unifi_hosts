@@ -1,8 +1,0 @@
-#!/usr/bin/env ruby
-
-require 'unifi_hosts/cli'
-
-cli = UnifiHosts::CLI.new(File.basename($0))
-result = cli.run(ARGV)
-exit result
-
