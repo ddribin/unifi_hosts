@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Dave Dribin"]
   spec.email         = ["dave@dribin.org"]
 
-  spec.summary       = "Remove duplicates from /etc/host of a UniFi USG"
+  spec.summary       = "Transform /etc/host file of a UniFi Security Gateway"
   # spec.description   = "TODO: Write a longer description or delete this line."
   # spec.homepage      = "TODO: Put your gem's website or public repo URL here."
   spec.license       = "MIT"
