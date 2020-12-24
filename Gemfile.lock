@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     unifi_dedupe_hosts (0.1.0)
+      thor
 
 GEM
   remote: https://rubygems.org/
@@ -10,6 +11,7 @@ GEM
     rake (13.0.3)
     test-unit (3.3.7)
       power_assert
+    thor (1.0.1)
 
 PLATFORMS
   universal-darwin-19
