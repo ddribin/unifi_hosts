@@ -101,20 +101,13 @@ module UnifiHosts
 
       # Opens output file and calls the block with the IO handle
       def with_output(input_file:)
-        output_file = options[:output] 
-        output_file = input_file if options[:in_place]
-        output_file ||=  "-"
+        output_file = effective_output_file(input_file: input_file)
 
         result = 0
         begin
           if output_file == '-'
             result = yield(STDOUT)
           else
-            if options[:dry_run]
-              $stderr.puts "Dry run: Not writing to #{output_file}"
-              output_file = '/dev/null' if options[:dry_run]
-            end
-
             File.open(output_file, "w") { |output|  yield output }
           end
         rescue Errno::ENOENT, Errno::EACCES => e
@@ -122,6 +115,18 @@ module UnifiHosts
           result = 1
         end
         return result
+      end
+
+      def effective_output_file(input_file:)
+        output_file = options[:output]
+        output_file = input_file if options[:in_place]
+        output_file ||=  "-"
+
+        if output_file != "-" && options[:dry_run]
+          $stderr.puts "Dry run: Not writing to #{output_file}"
+          output_file = '/dev/null' if options[:dry_run]
+        end
+        return output_file
       end
 
       def error(message)
