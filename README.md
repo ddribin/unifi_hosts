@@ -2,9 +2,9 @@
 
 `unfi-hosts` is a script that can transform an `/etc/hosts` file for a UniFi Security Gateway (USG). Some of the transforms are:
 
-- Reformat so that the columns are evenly spaced out.
+- Reformat entries so that the columns are evenly spaced out.
 - Sort entries by IP address.
-- Remove duplicate IP addresses.
+- Remove entries with duplicate IP addresses.
 
 Removing duplicates can help fix issues with incorrectly reported hostnames.
 
