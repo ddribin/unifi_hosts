@@ -7,3 +7,5 @@
 /spec/reports/
 /tmp/
 /vendor/
+/.direnv/
+.envrc
