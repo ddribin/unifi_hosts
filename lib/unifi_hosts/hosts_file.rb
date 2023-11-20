@@ -1,3 +1,5 @@
+require 'stringio'
+
 require_relative 'host_entry'
 
 module UnifiHosts
