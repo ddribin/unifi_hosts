@@ -1,6 +1,6 @@
 # UniFi Hosts
 
-`unfi-hosts` is a script that can transform an `/etc/hosts` file for a UniFi Security Gateway (USG). Some of the transforms are:
+`unifi-hosts` is a script that can transform an `/etc/hosts` file for a UniFi Security Gateway (USG). Some of the transforms are:
 
 - Reformat entries so that the columns are evenly spaced out.
 - Sort entries by IP address.
